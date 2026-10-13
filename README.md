@@ -1,10 +1,12 @@
 # Rangoli Arrays: The Multiplication Adventure 🪔✨
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github)](https://github.com/divyaitankar2006-art/Rangoli-Arrays)
+[![Live Demo](https://img.shields.io/badge/Demo-Play%20Online-FF6F00?style=flat&logo=googlechrome&logoColor=white)](https://divyaitankar2006-art.github.io/Rangoli-Arrays/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+> 🔗 **Repository**: [https://github.com/divyaitankar2006-art/Rangoli-Arrays](https://github.com/divyaitankar2006-art/Rangoli-Arrays)  
+> 🎮 **Live Game**: [https://divyaitankar2006-art.github.io/Rangoli-Arrays/](https://divyaitankar2006-art.github.io/Rangoli-Arrays/)
 
 An interactive, visual educational math game designed for young learners (Grades 3–4) to discover and master multiplication arrays through the beauty of traditional Indian rangoli dot patterns.
 
@@ -88,7 +90,7 @@ This repository includes an automated GitHub Actions deployment workflow in `.gi
 ## 📂 Project Structure
 
 ```plaintext
-rangoli-aarays/
+Rangoli-Arrays/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml      # Automated GitHub Pages CI/CD workflow

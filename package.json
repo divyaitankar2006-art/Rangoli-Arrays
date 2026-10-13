@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Rangoli Arrays: The Multiplication Adventure",
+  "homepage": "https://divyaitankar2006-art.github.io/Rangoli-Arrays/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/divyaitankar2006-art/Rangoli-Arrays.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
