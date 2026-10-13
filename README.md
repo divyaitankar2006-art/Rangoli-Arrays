@@ -39,8 +39,8 @@ An interactive, visual educational math game designed for young learners (Grades
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/rangoli-aarays.git
-   cd rangoli-aarays
+   git clone https://github.com/divyaitankar2006-art/Rangoli-Arrays.git
+   cd Rangoli-Arrays
    ```
 
 2. **Install dependencies:**
@@ -81,7 +81,7 @@ This repository includes an automated GitHub Actions deployment workflow in `.gi
 1. Push your repository to GitHub on the `main` branch.
 2. In your GitHub repository, go to **Settings** > **Pages**.
 3. Under **Build and deployment** > **Source**, select **GitHub Actions**.
-4. The workflow will automatically build the project and publish your game to `https://<your-username>.github.io/<repo-name>/`.
+4. The workflow will automatically build the project and publish your game to `https://divyaitankar2006-art.github.io/Rangoli-Arrays/`.
 
 ---
 
