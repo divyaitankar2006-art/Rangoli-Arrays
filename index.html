@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rangoli Arrays: The Multiplication Adventure</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Nunito:wght@400;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <div class="audio-controls"
+            style="position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000;">
+            <button id="btn-music-toggle" class="sound-toggle-btn static-pos" title="Toggle Music">🎵</button>
+            <button id="btn-sound-toggle" class="sound-toggle-btn static-pos" title="Toggle Sound">🔊</button>
+        </div>
+        <!-- Screens will be dynamically shown/hidden here -->
+
+        <!-- 1. Welcome Screen -->
+        <section id="welcome-screen" class="screen active">
+            <div class="background-decorations">
+                <div class="corner-rangoli top-left"></div>
+                <div class="corner-rangoli top-right"></div>
+                <div class="corner-rangoli bottom-left"></div>
+                <div class="corner-rangoli bottom-right"></div>
+            </div>
+
+            <div class="logo-container">
+                <div class="css-rangoli-logo">
+                    <div class="petal petal-1"></div>
+                    <div class="petal petal-2"></div>
+                    <div class="petal petal-3"></div>
+                    <div class="petal petal-4"></div>
+                    <div class="center-dot"></div>
+                </div>
+                <h1 class="main-title">Rangoli Arrays</h1>
+                <h2 class="subtitle">Multiply, Create & Colour!</h2>
+                <p class="supporting-text">Discover the magic of multiplication through colourful rangoli patterns.</p>
+            </div>
+
+            <div class="button-group">
+                <button id="btn-lets-play" class="primary-btn btn-animated">LET'S PLAY <span
+                        class="sparkle">✨</span></button>
+                <button id="btn-how-to-play" class="secondary-btn">How to Play</button>
+            </div>
+        </section>
+
+        <!-- Instructions Panel (Modal) -->
+        <div id="instructions-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>How to Play</h2>
+                <p>Welcome to Rangoli Arrays!</p>
+                <ul>
+                    <li><strong>Learn & Play:</strong> Solve multiplication challenges by colouring the correct number
+                        of dots in rows and columns.</li>
+                    <li><strong>Free Creator:</strong> Make your own beautiful rangoli patterns.</li>
+                    <li><strong>Commutative Magic:</strong> Discover how 3×4 is the same as 4×3!</li>
+                </ul>
+                <button id="btn-close-instructions" class="primary-btn small-btn">Got it!</button>
+            </div>
+        </div>
+
+        <!-- 2. Mode Selection Screen (How Do You Want To Play?) -->
+        <section id="mode-selection" class="screen hidden">
+            <div class="header">
+                <h2>HOW DO YOU WANT TO PLAY?</h2>
+                <p class="subtitle" style="font-size:1.5rem; margin-top:-1rem;">Choose your adventure. Your rangoli
+                    journey starts here!</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; width:100%; max-width:1200px; margin-bottom:1rem;">
+                <button class="nav-btn" id="btn-back-welcome">🏠 Back to Welcome</button>
+                <div class="stars-display">⭐ <span id="total-stars-menu">0</span></div>
+            </div>
+
+            <div class="cards-container">
+                <!-- Card 1 -->
+                <div class="menu-card" id="card-beginner">
+                    <div class="card-icon">🌱</div>
+                    <h3>BEGINNER<br><small>RANGOLI EXPLORER</small></h3>
+                    <p>Easy multiplication. Small dot arrays. Visual hints. No timer.</p>
+                    <button class="primary-btn">Play Now</button>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="menu-card" id="card-intermediate">
+                    <div class="card-icon">🎨</div>
+                    <h3>INTERMEDIATE<br><small>COLOUR MASTER</small></h3>
+                    <p>Missing-number puzzles. Complete-the-rangoli challenges.</p>
+                    <button class="primary-btn">Play Now</button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="menu-card" id="card-advanced">
+                    <div class="card-icon">👑</div>
+                    <h3>ADVANCED<br><small>RANGOLI CHAMPION</small></h3>
+                    <p>Find mistakes. Boss challenges with multiple valid solutions.</p>
+                    <button class="primary-btn">Play Now</button>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="menu-card" id="card-speed">
+                    <div class="card-icon">⚡</div>
+                    <h3>SPEED CHALLENGE</h3>
+                    <p>Race against time! Answer as many as you can before the clock stops.</p>
+                    <button class="primary-btn">Play Now</button>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="menu-card" id="card-free-creator">
+                    <div class="card-icon">🌸</div>
+                    <h3>FREE RANGOLI CREATOR</h3>
+                    <p>Creative mode. Create your own patterns. No timer, just art.</p>
+                    <button class="primary-btn">Play Now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Learn & Play Screen -->
+        <section id="learn-play-screen" class="screen hidden">
+            <div class="top-bar">
+                <button class="nav-btn btn-home">🏠 Menu</button>
+                <div class="level-info">
+                    <span id="current-mode-name">Beginner</span> -
+                    <button id="btn-prev-level" class="ctrl-btn"
+                        style="width:25px;height:25px;font-size:1rem;margin:0 5px;">◀</button>
+                    Level <span id="current-challenge-num">1</span> <span id="total-challenge-num">of 15</span>
+                    <button id="btn-next-level-top" class="ctrl-btn"
+                        style="width:25px;height:25px;font-size:1rem;margin:0 5px;">▶</button>
+                </div>
+                <div class="timer-display hidden" id="speed-timer">⏱️ <span id="time-left">60</span>s</div>
+                <div class="stars-display">⭐ <span id="total-stars-play">0</span></div>
+            </div>
+
+            <div class="challenge-container">
+                <div class="instruction-panel">
+                    <h3 id="challenge-instruction">Make 3 rows of 4!</h3>
+                    <h2 id="challenge-equation" class="equation">3 × 4 = ?</h2>
+                    <p id="challenge-feedback" class="feedback-text hidden"></p>
+                </div>
+
+                <div class="controls-panel">
+                    <div class="dimension-control">
+                        <label>Rows:</label>
+                        <button class="ctrl-btn" id="btn-row-minus">-</button>
+                        <span id="display-rows" class="dimension-display">3</span>
+                        <button class="ctrl-btn" id="btn-row-plus">+</button>
+                    </div>
+                    <div class="dimension-control">
+                        <label>Columns:</label>
+                        <button class="ctrl-btn" id="btn-col-minus">-</button>
+                        <span id="display-cols" class="dimension-display">4</span>
+                        <button class="ctrl-btn" id="btn-col-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="color-palette" id="play-palette">
+                    <!-- Palette colors generated by JS -->
+                </div>
+
+                <div class="grid-wrapper">
+                    <div id="play-grid" class="dot-grid"></div>
+                </div>
+
+                <div class="stats-panel">
+                    Coloured: <span id="colored-count">0</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-hint" class="secondary-btn">💡 Hint</button>
+                    <button id="btn-reset" class="secondary-btn">🔄 Reset</button>
+                    <button id="btn-check" class="primary-btn">✅ Check Answer</button>
+                    <button id="btn-next" class="primary-btn hidden">Next Challenge ➡️</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Free Rangoli Creator Screen -->
+        <section id="creator-screen" class="screen hidden">
+            <div class="top-bar">
+                <button class="nav-btn btn-home">🏠 Menu</button>
+                <h2>Rangoli Studio</h2>
+            </div>
+
+            <div class="creator-container">
+                <div class="tools-panel">
+                    <div class="dimension-control">
+                        <label>Rows:</label>
+                        <input type="range" id="creator-rows" min="2" max="10" value="5">
+                        <span id="creator-rows-val">5</span>
+                    </div>
+                    <div class="dimension-control">
+                        <label>Columns:</label>
+                        <input type="range" id="creator-cols" min="2" max="10" value="5">
+                        <span id="creator-cols-val">5</span>
+                    </div>
+
+                    <div class="color-palette" id="creator-palette">
+                        <!-- Colors -->
+                    </div>
+
+                    <div class="creator-actions">
+                        <button id="btn-fill" class="secondary-btn">Fill All</button>
+                        <button id="btn-clear" class="secondary-btn">Clear Canvas</button>
+                    </div>
+                </div>
+
+                <div class="grid-wrapper">
+                    <div id="creator-grid" class="dot-grid"></div>
+                </div>
+
+                <div class="creator-info">
+                    <p>Grid: <span id="creator-dim-text">5 × 5</span></p>
+                    <p>Coloured Dots: <span id="creator-count">0</span></p>
+                    <p id="creator-equation" class="equation-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. My Progress Screen (Kept for historical compatibility, if needed, but we'll use Results Screen mostly) -->
+        <section id="progress-screen" class="screen hidden">
+            <div class="top-bar">
+                <button class="nav-btn btn-home">🏠 Menu</button>
+                <h2>My Progress</h2>
+            </div>
+
+            <div class="progress-container">
+                <div class="trophy-icon">🏆</div>
+                <div class="stats-card">
+                    <h3>Total Stars</h3>
+                    <div class="big-stars">⭐ <span id="progress-stars">0</span></div>
+                </div>
+                <div class="stats-card">
+                    <h3>Challenges Completed</h3>
+                    <div class="big-number"><span id="progress-completed">0</span> / 15</div>
+                </div>
+
+                <div class="stages-progress">
+                    <div class="stage-card" id="stage-1-progress">
+                        <h4>Stage 1: Beginner</h4>
+                        <div class="progress-bar">
+                            <div class="fill" id="bar-stage-1" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stage-card" id="stage-2-progress">
+                        <h4>Stage 2: Master</h4>
+                        <div class="progress-bar">
+                            <div class="fill" id="bar-stage-2" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stage-card" id="stage-3-progress">
+                        <h4>Stage 3: Champion</h4>
+                        <div class="progress-bar">
+                            <div class="fill" id="bar-stage-3" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="primary-btn btn-home">Menu</button>
+            </div>
+        </section>
+
+        <!-- 6. Results Screen -->
+        <section id="results-screen" class="screen hidden">
+            <div class="top-bar">
+                <button class="nav-btn btn-home">🏠 Menu</button>
+                <h2 id="results-title">Session Complete!</h2>
+            </div>
+            <div class="progress-container" style="max-width: 600px; position: relative; overflow: hidden;">
+                <!-- Confetti container -->
+                <div id="confetti-container"
+                    style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
+
+                <div class="trophy-icon">🏆</div>
+                <h2 id="results-mode" style="color:var(--color-primary); margin-bottom:1rem;">Beginner Mode</h2>
+                <h3 id="results-message" style="margin-bottom:2rem; color:var(--color-purple);">Great Job!</h3>
+
+                <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
+                    <div class="stats-card" style="width:120px;">
+                        <h4>Attempted</h4>
+                        <div class="big-number" id="results-attempted" style="font-size:2rem;">0</div>
+                    </div>
+                    <div class="stats-card" style="width:120px;">
+                        <h4>Correct</h4>
+                        <div class="big-number" id="results-correct" style="font-size:2rem;">0</div>
+                    </div>
+                    <div class="stats-card" style="width:120px;">
+                        <h4>Accuracy</h4>
+                        <div class="big-number" id="results-accuracy" style="font-size:2rem;">0%</div>
+                    </div>
+                </div>
+
+                <div class="stats-card" style="width:100%; margin-bottom:2rem;">
+                    <h3>Stars Earned</h3>
+                    <div class="big-stars">⭐ <span id="results-stars">0</span></div>
+                </div>
+
+                <div class="button-group">
+                    <button id="btn-next-level" class="primary-btn hidden">Next Level</button>
+                    <button id="btn-play-again" class="primary-btn">Replay</button>
+                    <button class="secondary-btn btn-home">Choose Another Mode</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hint Modal -->
+        <div id="hint-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Hint</h2>
+                <p id="hint-text"></p>
+                <button id="btn-close-hint" class="primary-btn small-btn">Okay!</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Sound Effects -->
+    <audio id="bg-music" src="bgm.wav" loop autoplay preload="auto"></audio>
+    <audio id="snd-click"
+        src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+        preload="auto"></audio>
+    <audio id="snd-success"
+        src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
+        preload="auto"></audio>
+    <!-- Using web audio api in JS instead for reliable sound without files -->
+
+    <script type="module" src="/game.js"></script>
+</body>
+
+</html>
