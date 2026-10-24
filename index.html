@@ -5,327 +5,804 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rangoli Arrays: The Multiplication Adventure</title>
+    <meta name="description" content="Discover the magic of multiplication through colourful Indian rangoli patterns and interactive dot arrays for kids!">
+    
+    <!-- Google Fonts for Kids Adventure & Indian Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Nunito:wght@400;700;900&display=swap"
-        rel="stylesheet">
 </head>
 
 <body>
     <div id="app">
-        <div class="audio-controls"
-            style="position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000;">
-            <button id="btn-music-toggle" class="sound-toggle-btn static-pos" title="Toggle Music">🎵</button>
-            <button id="btn-sound-toggle" class="sound-toggle-btn static-pos" title="Toggle Sound">🔊</button>
+        <!-- Floating Audio Controls with Festive Capsule -->
+        <div class="audio-controls-capsule" role="region" aria-label="Sound Controls">
+            <div class="audio-pill">
+                <button id="btn-music-toggle" class="sound-toggle-btn" title="Toggle Music" aria-label="Toggle Background Music">
+                    <span class="icon-music">🎵</span>
+                    <span class="btn-tooltip">Music</span>
+                </button>
+                <div class="audio-divider"></div>
+                <button id="btn-sound-toggle" class="sound-toggle-btn" title="Toggle Sound FX" aria-label="Toggle Sound Effects">
+                    <span class="icon-sound">🔊</span>
+                    <span class="btn-tooltip">Sound</span>
+                </button>
+            </div>
         </div>
-        <!-- Screens will be dynamically shown/hidden here -->
 
-        <!-- 1. Welcome Screen -->
+        <!-- Background Rangoli & Festive Ambience -->
+        <div class="festive-background" aria-hidden="true">
+            <!-- Toran / Festive Floral Garland at Top -->
+            <div class="top-toran">
+                <svg viewBox="0 0 1200 60" preserveAspectRatio="none" class="toran-svg">
+                    <path d="M0,0 L1200,0 L1200,20 Q1125,55 1050,20 Q975,55 900,20 Q825,55 750,20 Q675,55 600,20 Q525,55 450,20 Q375,55 300,20 Q225,55 150,20 Q75,55 0,20 Z" fill="url(#toran-grad)" />
+                    <!-- Marigold Blossoms (Genda Phool) along garland -->
+                    <circle cx="75" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="75" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="150" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="225" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="225" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="300" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="375" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="375" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="450" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="525" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="525" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="600" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="675" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="675" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="750" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="825" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="825" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="900" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="975" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="975" cy="38" r="9" fill="#ffeb3b" />
+                    <circle cx="1050" cy="22" r="11" fill="#e91e63" />
+                    <circle cx="1125" cy="38" r="14" fill="#ff9800" />
+                    <circle cx="1125" cy="38" r="9" fill="#ffeb3b" />
+                    <defs>
+                        <linearGradient id="toran-grad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#4caf50" />
+                            <stop offset="50%" stop-color="#2e7d32" />
+                            <stop offset="100%" stop-color="#4caf50" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            <!-- Corner Mandalas / Kolams -->
+            <div class="corner-kolam top-left-kolam"></div>
+            <div class="corner-kolam top-right-kolam"></div>
+            <div class="corner-kolam bottom-left-kolam"></div>
+            <div class="corner-kolam bottom-right-kolam"></div>
+
+            <!-- Floating Math & Sparkle Particles -->
+            <div class="floating-bubble bubble-1">2 × 3 = 6</div>
+            <div class="floating-bubble bubble-2">4 × 4 = 16</div>
+            <div class="floating-bubble bubble-3">3 × 5 = 15</div>
+            <div class="floating-bubble bubble-4">🌸</div>
+            <div class="floating-bubble bubble-5">✨</div>
+            <div class="floating-bubble bubble-6">⭐</div>
+            <div class="floating-bubble bubble-7">5 × 2 = 10</div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 1. WELCOME SCREEN                              -->
+        <!-- ============================================== -->
         <section id="welcome-screen" class="screen active">
-            <div class="background-decorations">
-                <div class="corner-rangoli top-left"></div>
-                <div class="corner-rangoli top-right"></div>
-                <div class="corner-rangoli bottom-left"></div>
-                <div class="corner-rangoli bottom-right"></div>
-            </div>
-
-            <div class="logo-container">
-                <div class="css-rangoli-logo">
-                    <div class="petal petal-1"></div>
-                    <div class="petal petal-2"></div>
-                    <div class="petal petal-3"></div>
-                    <div class="petal petal-4"></div>
-                    <div class="center-dot"></div>
+            <div class="welcome-container">
+                <!-- Glowing Decorative Badge -->
+                <div class="adventure-tag">
+                    <span class="tag-sparkle">✨</span>
+                    <span>MATH & ART ADVENTURE FOR KIDS</span>
+                    <span class="tag-sparkle">✨</span>
                 </div>
-                <h1 class="main-title">Rangoli Arrays</h1>
-                <h2 class="subtitle">Multiply, Create & Colour!</h2>
-                <p class="supporting-text">Discover the magic of multiplication through colourful rangoli patterns.</p>
-            </div>
 
-            <div class="button-group">
-                <button id="btn-lets-play" class="primary-btn btn-animated">LET'S PLAY <span
-                        class="sparkle">✨</span></button>
-                <button id="btn-how-to-play" class="secondary-btn">How to Play</button>
+                <!-- Animated Rangoli Mandala Logo -->
+                <div class="rangoli-hero-emblem" aria-label="Rangoli Mandala Emblem">
+                    <div class="mandala-glow-ring"></div>
+                    <div class="mandala-outer-ring">
+                        <!-- SVG 8-Petal Rangoli Flower -->
+                        <svg viewBox="0 0 200 200" class="mandala-svg">
+                            <defs>
+                                <radialGradient id="diyaGlow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#fff9c4" />
+                                    <stop offset="60%" stop-color="#ffb300" />
+                                    <stop offset="100%" stop-color="#ff6f00" />
+                                </radialGradient>
+                                <linearGradient id="petalGrad1" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#ff2a7a" />
+                                    <stop offset="100%" stop-color="#c2185b" />
+                                </linearGradient>
+                                <linearGradient id="petalGrad2" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#00e5ff" />
+                                    <stop offset="100%" stop-color="#00838f" />
+                                </linearGradient>
+                                <linearGradient id="petalGrad3" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#ffca28" />
+                                    <stop offset="100%" stop-color="#ff8f00" />
+                                </linearGradient>
+                                <linearGradient id="petalGrad4" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#ab47bc" />
+                                    <stop offset="100%" stop-color="#6a1b9a" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Rotating outer geometric dot ring -->
+                            <g class="spin-clockwise">
+                                <circle cx="100" cy="20" r="6" fill="#ffb300" />
+                                <circle cx="157" cy="43" r="6" fill="#e91e63" />
+                                <circle cx="180" cy="100" r="6" fill="#00b4d8" />
+                                <circle cx="157" cy="157" r="6" fill="#7b1fa2" />
+                                <circle cx="100" cy="180" r="6" fill="#ffb300" />
+                                <circle cx="43" cy="157" r="6" fill="#e91e63" />
+                                <circle cx="20" cy="100" r="6" fill="#00b4d8" />
+                                <circle cx="43" cy="43" r="6" fill="#7b1fa2" />
+                            </g>
+                            <!-- 8 Lotus Petals -->
+                            <g class="spin-counter">
+                                <path d="M100,100 Q80,45 100,30 Q120,45 100,100 Z" fill="url(#petalGrad1)" />
+                                <path d="M100,100 Q145,80 160,100 Q145,120 100,100 Z" fill="url(#petalGrad2)" />
+                                <path d="M100,100 Q120,155 100,170 Q80,155 100,100 Z" fill="url(#petalGrad1)" />
+                                <path d="M100,100 Q55,120 40,100 Q55,80 100,100 Z" fill="url(#petalGrad2)" />
+                                <!-- Diagonal petals -->
+                                <path d="M100,100 Q130,55 145,55 Q145,70 100,100 Z" fill="url(#petalGrad3)" />
+                                <path d="M100,100 Q145,130 145,145 Q130,145 100,100 Z" fill="url(#petalGrad4)" />
+                                <path d="M100,100 Q70,145 55,145 Q55,130 100,100 Z" fill="url(#petalGrad3)" />
+                                <path d="M100,100 Q55,70 55,55 Q70,55 100,100 Z" fill="url(#petalGrad4)" />
+                            </g>
+                            <!-- Center Golden Diya / Jewel -->
+                            <circle cx="100" cy="100" r="24" fill="url(#diyaGlow)" filter="drop-shadow(0px 0px 8px #ffb300)" />
+                            <circle cx="100" cy="100" r="14" fill="#ffffff" opacity="0.9" />
+                            <circle cx="100" cy="100" r="7" fill="#ff6f00" />
+                        </svg>
+                    </div>
+
+                    <!-- Floating Mini Array Accents -->
+                    <div class="mini-array-badge top-left-badge">
+                        <span>● ● ●</span>
+                        <span>● ● ●</span>
+                        <small>2 × 3</small>
+                    </div>
+                    <div class="mini-array-badge bottom-right-badge">
+                        <span>● ● ● ●</span>
+                        <span>● ● ● ●</span>
+                        <small>2 × 4</small>
+                    </div>
+                </div>
+
+                <!-- Game Title & Subtitles -->
+                <div class="title-container">
+                    <h1 class="main-title">
+                        <span class="title-word title-rangoli">Rangoli</span>
+                        <span class="title-word title-arrays">Arrays</span>
+                    </h1>
+                    <div class="subtitle-badge">
+                        <span class="sparkle-icon">✨</span>
+                        <h2 class="subtitle">The Multiplication Adventure!</h2>
+                        <span class="sparkle-icon">✨</span>
+                    </div>
+                    <p class="supporting-text">
+                        Discover the joyful magic of multiplication through colourful Indian rangoli dot arrays.
+                        Colour rows, complete patterns, and become a Multiplication Master!
+                    </p>
+                </div>
+
+                <!-- Action Button Group -->
+                <div class="button-group hero-buttons">
+                    <button id="btn-lets-play" class="primary-btn btn-animated btn-giant-play">
+                        <span class="btn-shine"></span>
+                        <span class="btn-icon">🎮</span>
+                        <span class="btn-text">PLAY NOW</span>
+                        <span class="sparkle-burst">✨</span>
+                    </button>
+                    <button id="btn-how-to-play" class="secondary-btn btn-how">
+                        <span class="btn-icon">📖</span>
+                        <span>How to Play</span>
+                    </button>
+                </div>
+
+                <!-- Footer Feature Highlights -->
+                <div class="welcome-features">
+                    <div class="feat-pill"><span class="feat-icon">🎯</span> 45 Array Levels</div>
+                    <div class="feat-pill"><span class="feat-icon">🎨</span> Free Creator Mode</div>
+                    <div class="feat-pill"><span class="feat-icon">⚡</span> 60s Speed Sprint</div>
+                    <div class="feat-pill"><span class="feat-icon">⭐</span> Earn Stars & Badges</div>
+                </div>
             </div>
         </section>
 
-        <!-- Instructions Panel (Modal) -->
-        <div id="instructions-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>How to Play</h2>
-                <p>Welcome to Rangoli Arrays!</p>
-                <ul>
-                    <li><strong>Learn & Play:</strong> Solve multiplication challenges by colouring the correct number
-                        of dots in rows and columns.</li>
-                    <li><strong>Free Creator:</strong> Make your own beautiful rangoli patterns.</li>
-                    <li><strong>Commutative Magic:</strong> Discover how 3×4 is the same as 4×3!</li>
-                </ul>
-                <button id="btn-close-instructions" class="primary-btn small-btn">Got it!</button>
+        <!-- Instructions Modal -->
+        <div id="instructions-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-backdrop" aria-hidden="true"></div>
+            <div class="modal-content rangoli-modal-card">
+                <div class="modal-header-banner">
+                    <span class="modal-rangoli-icon">🌸</span>
+                    <h2 id="modal-title">How to Play Rangoli Arrays</h2>
+                    <span class="modal-rangoli-icon">🌸</span>
+                </div>
+                <div class="instructions-body">
+                    <div class="guide-card">
+                        <div class="guide-num">1</div>
+                        <div class="guide-text">
+                            <h3>Understand the Array</h3>
+                            <p>An array has <strong>Rows</strong> (across ↔) and <strong>Columns</strong> (down ↕).<br>
+                            For example, <strong>3 rows of 4 dots</strong> makes <strong>3 × 4 = 12</strong> dots!</p>
+                        </div>
+                    </div>
+                    <div class="guide-card">
+                        <div class="guide-num">2</div>
+                        <div class="guide-text">
+                            <h3>Adjust Rows & Columns</h3>
+                            <p>Use the big <strong>+</strong> and <strong>−</strong> buttons to set your rows and columns to match the question.</p>
+                        </div>
+                    </div>
+                    <div class="guide-card">
+                        <div class="guide-num">3</div>
+                        <div class="guide-text">
+                            <h3>Colour with Rangoli Powder</h3>
+                            <p>Pick your favourite vibrant colour powder and tap each dot to fill it in beautifully.</p>
+                        </div>
+                    </div>
+                    <div class="guide-card">
+                        <div class="guide-num">4</div>
+                        <div class="guide-text">
+                            <h3>Check & Celebrate!</h3>
+                            <p>Tap <strong>Check Answer</strong> to verify! Earn shiny gold stars, hear cheerful praises, and unlock higher challenges.</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-close-instructions" class="primary-btn btn-modal-action">
+                    <span>Let's Start! 🌟</span>
+                </button>
             </div>
         </div>
 
-        <!-- 2. Mode Selection Screen (How Do You Want To Play?) -->
+        <!-- ============================================== -->
+        <!-- 2. MODE SELECTION SCREEN (Challenge Selection)  -->
+        <!-- ============================================== -->
         <section id="mode-selection" class="screen hidden">
-            <div class="header">
-                <h2>HOW DO YOU WANT TO PLAY?</h2>
-                <p class="subtitle" style="font-size:1.5rem; margin-top:-1rem;">Choose your adventure. Your rangoli
-                    journey starts here!</p>
-            </div>
-            <div style="display:flex; justify-content:space-between; width:100%; max-width:1200px; margin-bottom:1rem;">
-                <button class="nav-btn" id="btn-back-welcome">🏠 Back to Welcome</button>
-                <div class="stars-display">⭐ <span id="total-stars-menu">0</span></div>
+            <!-- Screen Header Bar -->
+            <div class="screen-top-nav">
+                <button class="nav-btn btn-round-pill" id="btn-back-welcome">
+                    <span class="nav-icon">🏠</span> Back to Home
+                </button>
+                <div class="stars-display-capsule">
+                    <span class="star-glow-icon">⭐</span>
+                    <span class="stars-label">Total Stars:</span>
+                    <span id="total-stars-menu" class="stars-counter-val">0</span>
+                </div>
             </div>
 
+            <div class="mode-header-section">
+                <div class="mode-title-ribbon">
+                    <span class="ribbon-sparkle">🌸</span>
+                    <h2>CHOOSE YOUR ADVENTURE!</h2>
+                    <span class="ribbon-sparkle">🌸</span>
+                </div>
+                <p class="subtitle mode-subtitle">Pick a challenge and begin your magical multiplication journey!</p>
+            </div>
+
+            <!-- 5 Distinct Illustrated Mode Cards -->
             <div class="cards-container">
-                <!-- Card 1 -->
-                <div class="menu-card" id="card-beginner">
-                    <div class="card-icon">🌱</div>
-                    <h3>BEGINNER<br><small>RANGOLI EXPLORER</small></h3>
-                    <p>Easy multiplication. Small dot arrays. Visual hints. No timer.</p>
-                    <button class="primary-btn">Play Now</button>
+                <!-- Card 1: Beginner -->
+                <div class="menu-card card-beginner" id="card-beginner" role="button" tabindex="0">
+                    <div class="card-glow-bg"></div>
+                    <div class="card-badge-pill">🌱 LEVEL 1 – 15</div>
+                    <div class="card-avatar-wrap">
+                        <div class="card-avatar-ring green-theme">
+                            <span class="card-emoji">🌱</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            BEGINNER
+                            <span class="card-subtitle-tag">Rangoli Explorer</span>
+                        </h3>
+                        <div class="difficulty-rating">
+                            <span class="diff-label">Difficulty:</span>
+                            <span class="diff-stars">⭐</span>
+                            <span class="diff-badge easy">Friendly</span>
+                        </div>
+                        <p class="card-desc">Easy multiplication with 2×2 to 4×4 dot arrays, visual hints, and no rush!</p>
+                    </div>
+                    <button class="primary-btn card-cta-btn">
+                        <span>Explore Now</span>
+                        <span class="cta-arrow">➔</span>
+                    </button>
                 </div>
 
-                <!-- Card 2 -->
-                <div class="menu-card" id="card-intermediate">
-                    <div class="card-icon">🎨</div>
-                    <h3>INTERMEDIATE<br><small>COLOUR MASTER</small></h3>
-                    <p>Missing-number puzzles. Complete-the-rangoli challenges.</p>
-                    <button class="primary-btn">Play Now</button>
+                <!-- Card 2: Intermediate -->
+                <div class="menu-card card-intermediate" id="card-intermediate" role="button" tabindex="0">
+                    <div class="card-glow-bg"></div>
+                    <div class="card-badge-pill">🎨 LEVEL 1 – 15</div>
+                    <div class="card-avatar-wrap">
+                        <div class="card-avatar-ring pink-theme">
+                            <span class="card-emoji">🎨</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            INTERMEDIATE
+                            <span class="card-subtitle-tag">Colour Master</span>
+                        </h3>
+                        <div class="difficulty-rating">
+                            <span class="diff-label">Difficulty:</span>
+                            <span class="diff-stars">⭐⭐</span>
+                            <span class="diff-badge medium">Medium</span>
+                        </div>
+                        <p class="card-desc">Missing-number puzzles & complete-the-rangoli arrays up to 7×7!</p>
+                    </div>
+                    <button class="primary-btn card-cta-btn">
+                        <span>Master Now</span>
+                        <span class="cta-arrow">➔</span>
+                    </button>
                 </div>
 
-                <!-- Card 3 -->
-                <div class="menu-card" id="card-advanced">
-                    <div class="card-icon">👑</div>
-                    <h3>ADVANCED<br><small>RANGOLI CHAMPION</small></h3>
-                    <p>Find mistakes. Boss challenges with multiple valid solutions.</p>
-                    <button class="primary-btn">Play Now</button>
+                <!-- Card 3: Advanced -->
+                <div class="menu-card card-advanced" id="card-advanced" role="button" tabindex="0">
+                    <div class="card-glow-bg"></div>
+                    <div class="card-badge-pill">👑 LEVEL 1 – 15</div>
+                    <div class="card-avatar-wrap">
+                        <div class="card-avatar-ring purple-theme">
+                            <span class="card-emoji">👑</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            ADVANCED
+                            <span class="card-subtitle-tag">Rangoli Champion</span>
+                        </h3>
+                        <div class="difficulty-rating">
+                            <span class="diff-label">Difficulty:</span>
+                            <span class="diff-stars">⭐⭐⭐</span>
+                            <span class="diff-badge hard">Challenging</span>
+                        </div>
+                        <p class="card-desc">Find errors, crack boss arrays with multiple factor solutions up to 10×10!</p>
+                    </div>
+                    <button class="primary-btn card-cta-btn">
+                        <span>Challenge Now</span>
+                        <span class="cta-arrow">➔</span>
+                    </button>
                 </div>
 
-                <!-- Card 4 -->
-                <div class="menu-card" id="card-speed">
-                    <div class="card-icon">⚡</div>
-                    <h3>SPEED CHALLENGE</h3>
-                    <p>Race against time! Answer as many as you can before the clock stops.</p>
-                    <button class="primary-btn">Play Now</button>
+                <!-- Card 4: Speed Challenge -->
+                <div class="menu-card card-speed" id="card-speed" role="button" tabindex="0">
+                    <div class="card-glow-bg"></div>
+                    <div class="card-badge-pill">⚡ 60 SECONDS</div>
+                    <div class="card-avatar-wrap">
+                        <div class="card-avatar-ring orange-theme">
+                            <span class="card-emoji">⚡</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            SPEED SPRINT
+                            <span class="card-subtitle-tag">Rapid Multiplication</span>
+                        </h3>
+                        <div class="difficulty-rating">
+                            <span class="diff-label">Timer:</span>
+                            <span class="diff-badge timer-badge">⏱️ 60s Race</span>
+                        </div>
+                        <p class="card-desc">Race the clock! How many rangoli arrays can you build before time runs out?</p>
+                    </div>
+                    <button class="primary-btn card-cta-btn">
+                        <span>Sprint Now</span>
+                        <span class="cta-arrow">➔</span>
+                    </button>
                 </div>
 
-                <!-- Card 5 -->
-                <div class="menu-card" id="card-free-creator">
-                    <div class="card-icon">🌸</div>
-                    <h3>FREE RANGOLI CREATOR</h3>
-                    <p>Creative mode. Create your own patterns. No timer, just art.</p>
-                    <button class="primary-btn">Play Now</button>
+                <!-- Card 5: Free Rangoli Creator -->
+                <div class="menu-card card-free-creator" id="card-free-creator" role="button" tabindex="0">
+                    <div class="card-glow-bg"></div>
+                    <div class="card-badge-pill">🌸 CREATIVE ART</div>
+                    <div class="card-avatar-wrap">
+                        <div class="card-avatar-ring rainbow-theme">
+                            <span class="card-emoji">🌸</span>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">
+                            RANGOLI STUDIO
+                            <span class="card-subtitle-tag">Free Art Creator</span>
+                        </h3>
+                        <div class="difficulty-rating">
+                            <span class="diff-label">Mode:</span>
+                            <span class="diff-badge art-badge">🌈 Creative Sand</span>
+                        </div>
+                        <p class="card-desc">Design custom rangoli patterns. Explore any array dimension with no timer!</p>
+                    </div>
+                    <button class="primary-btn card-cta-btn">
+                        <span>Create Now</span>
+                        <span class="cta-arrow">➔</span>
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- 3. Learn & Play Screen -->
+        <!-- ============================================== -->
+        <!-- 3. GAMEPLAY SCREEN (Learn & Play)              -->
+        <!-- ============================================== -->
         <section id="learn-play-screen" class="screen hidden">
-            <div class="top-bar">
-                <button class="nav-btn btn-home">🏠 Menu</button>
-                <div class="level-info">
-                    <span id="current-mode-name">Beginner</span> -
-                    <button id="btn-prev-level" class="ctrl-btn"
-                        style="width:25px;height:25px;font-size:1rem;margin:0 5px;">◀</button>
-                    Level <span id="current-challenge-num">1</span> <span id="total-challenge-num">of 15</span>
-                    <button id="btn-next-level-top" class="ctrl-btn"
-                        style="width:25px;height:25px;font-size:1rem;margin:0 5px;">▶</button>
+            <!-- Top Status Navigation Bar -->
+            <div class="play-top-bar">
+                <button class="nav-btn btn-home btn-round-pill">
+                    <span class="nav-icon">🏠</span> Menu
+                </button>
+
+                <!-- Current Mode & Level Pager -->
+                <div class="level-info-capsule">
+                    <span class="mode-badge-tag" id="current-mode-name">Beginner</span>
+                    <div class="level-stepper">
+                        <button id="btn-prev-level" class="ctrl-step-btn" title="Previous Level" aria-label="Previous Level">◀</button>
+                        <span class="level-indicator-text">
+                            Level <strong id="current-challenge-num">1</strong>
+                            <span id="total-challenge-num" class="total-tag">of 15</span>
+                        </span>
+                        <button id="btn-next-level-top" class="ctrl-step-btn" title="Next Level" aria-label="Next Level">▶</button>
+                    </div>
                 </div>
-                <div class="timer-display hidden" id="speed-timer">⏱️ <span id="time-left">60</span>s</div>
-                <div class="stars-display">⭐ <span id="total-stars-play">0</span></div>
+
+                <!-- Speed Challenge Timer (Shown only in speed mode) -->
+                <div class="timer-display-pill hidden" id="speed-timer">
+                    <span class="timer-clock-icon">⏱️</span>
+                    <span class="timer-val" id="time-left">60</span><small>s</small>
+                </div>
+
+                <!-- Stars Earned Display -->
+                <div class="stars-display-capsule">
+                    <span class="star-glow-icon">⭐</span>
+                    <span id="total-stars-play" class="stars-counter-val">0</span>
+                </div>
             </div>
 
-            <div class="challenge-container">
-                <div class="instruction-panel">
-                    <h3 id="challenge-instruction">Make 3 rows of 4!</h3>
-                    <h2 id="challenge-equation" class="equation">3 × 4 = ?</h2>
+            <!-- Core Activity Arena -->
+            <div class="gameplay-arena">
+                <!-- Question & Equation Banner Card -->
+                <div class="challenge-banner-card">
+                    <div class="banner-top-accent">
+                        <span class="accent-flower">🌸</span>
+                        <h3 id="challenge-instruction" class="instruction-heading">Make 3 rows of 4!</h3>
+                        <span class="accent-flower">🌸</span>
+                    </div>
+                    <div class="equation-frame">
+                        <h2 id="challenge-equation" class="equation-display">3 × 4 = ?</h2>
+                    </div>
+                    <!-- Commutative Hint Helper -->
+                    <div class="commutative-tip" id="commutative-tip">
+                        <span class="tip-sparkle">💡</span>
+                        <span>Remember: <strong>Rows × Columns</strong> gives the total number of dots!</span>
+                    </div>
                     <p id="challenge-feedback" class="feedback-text hidden"></p>
                 </div>
 
-                <div class="controls-panel">
-                    <div class="dimension-control">
-                        <label>Rows:</label>
-                        <button class="ctrl-btn" id="btn-row-minus">-</button>
-                        <span id="display-rows" class="dimension-display">3</span>
-                        <button class="ctrl-btn" id="btn-row-plus">+</button>
+                <!-- Workspace Floor / Rangoli Board -->
+                <div class="workspace-card">
+                    <!-- Dimension Adjusters -->
+                    <div class="dimension-toolbar">
+                        <div class="dimension-chip" title="Adjust the number of horizontal rows">
+                            <div class="dim-icon-label">
+                                <span class="dim-icon">↕️</span>
+                                <label for="display-rows">Rows (Down):</label>
+                            </div>
+                            <div class="stepper-group">
+                                <button class="ctrl-btn btn-dim" id="btn-row-minus" aria-label="Decrease rows">−</button>
+                                <span id="display-rows" class="dimension-display">3</span>
+                                <button class="ctrl-btn btn-dim" id="btn-row-plus" aria-label="Increase rows">+</button>
+                            </div>
+                        </div>
+
+                        <div class="dimension-chip" title="Adjust the number of vertical columns">
+                            <div class="dim-icon-label">
+                                <span class="dim-icon">↔️</span>
+                                <label for="display-cols">Columns (Across):</label>
+                            </div>
+                            <div class="stepper-group">
+                                <button class="ctrl-btn btn-dim" id="btn-col-minus" aria-label="Decrease columns">−</button>
+                                <span id="display-cols" class="dimension-display">4</span>
+                                <button class="ctrl-btn btn-dim" id="btn-col-plus" aria-label="Increase columns">+</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="dimension-control">
-                        <label>Columns:</label>
-                        <button class="ctrl-btn" id="btn-col-minus">-</button>
-                        <span id="display-cols" class="dimension-display">4</span>
-                        <button class="ctrl-btn" id="btn-col-plus">+</button>
+
+                    <!-- Color Powder Selection Palette -->
+                    <div class="palette-bar">
+                        <div class="palette-title">
+                            <span class="palette-icon">🎨</span>
+                            <span>Choose Rangoli Powder:</span>
+                        </div>
+                        <div class="color-palette" id="play-palette">
+                            <!-- Swatches injected by JS -->
+                        </div>
                     </div>
-                </div>
 
-                <div class="color-palette" id="play-palette">
-                    <!-- Palette colors generated by JS -->
-                </div>
+                    <!-- The Rangoli Kolam Board with Dot Grid -->
+                    <div class="rangoli-canvas-board">
+                        <div class="board-frame-corner top-l"></div>
+                        <div class="board-frame-corner top-r"></div>
+                        <div class="board-frame-corner bot-l"></div>
+                        <div class="board-frame-corner bot-r"></div>
 
-                <div class="grid-wrapper">
-                    <div id="play-grid" class="dot-grid"></div>
-                </div>
+                        <!-- Grid Column Guide Numbers -->
+                        <div class="grid-col-guide-container" id="play-col-guides" aria-hidden="true"></div>
 
-                <div class="stats-panel">
-                    Coloured: <span id="colored-count">0</span>
-                </div>
+                        <div class="grid-middle-row">
+                            <!-- Grid Row Guide Numbers -->
+                            <div class="grid-row-guide-container" id="play-row-guides" aria-hidden="true"></div>
 
-                <div class="action-buttons">
-                    <button id="btn-hint" class="secondary-btn">💡 Hint</button>
-                    <button id="btn-reset" class="secondary-btn">🔄 Reset</button>
-                    <button id="btn-check" class="primary-btn">✅ Check Answer</button>
-                    <button id="btn-next" class="primary-btn hidden">Next Challenge ➡️</button>
+                            <!-- The Interactive Dot Grid -->
+                            <div class="grid-wrapper">
+                                <div id="play-grid" class="dot-grid" role="grid" aria-label="Rangoli Dot Grid"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Progress & Stats Pill -->
+                    <div class="stats-panel-bar">
+                        <div class="stat-progress-item">
+                            <span class="stat-icon">✨</span>
+                            <span>Coloured Dots:</span>
+                            <span class="colored-badge">
+                                <strong id="colored-count">0</strong>
+                            </span>
+                        </div>
+                        <div class="stat-hint-pill">
+                            <span>Tap any dot to colour or clear it!</span>
+                        </div>
+                    </div>
+
+                    <!-- Primary Action Buttons -->
+                    <div class="action-buttons gameplay-actions">
+                        <button id="btn-hint" class="secondary-btn btn-action-hint">
+                            <span class="btn-icon">💡</span> Hint
+                        </button>
+                        <button id="btn-reset" class="secondary-btn btn-action-reset">
+                            <span class="btn-icon">🔄</span> Clear Dots
+                        </button>
+                        <button id="btn-check" class="primary-btn btn-action-check">
+                            <span class="btn-icon">✅</span> Check Answer
+                        </button>
+                        <button id="btn-next" class="primary-btn btn-action-next hidden">
+                            Next Challenge ➡️
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Free Rangoli Creator Screen -->
+        <!-- ============================================== -->
+        <!-- 4. FREE RANGOLI CREATOR SCREEN                 -->
+        <!-- ============================================== -->
         <section id="creator-screen" class="screen hidden">
-            <div class="top-bar">
-                <button class="nav-btn btn-home">🏠 Menu</button>
-                <h2>Rangoli Studio</h2>
+            <div class="play-top-bar">
+                <button class="nav-btn btn-home btn-round-pill">
+                    <span class="nav-icon">🏠</span> Menu
+                </button>
+                <div class="creator-header-tag">
+                    <span class="creator-header-icon">🎨</span>
+                    <h2>Rangoli Art Studio</h2>
+                </div>
+                <div class="creator-placeholder-nav"></div>
             </div>
 
             <div class="creator-container">
-                <div class="tools-panel">
-                    <div class="dimension-control">
-                        <label>Rows:</label>
-                        <input type="range" id="creator-rows" min="2" max="10" value="5">
-                        <span id="creator-rows-val">5</span>
-                    </div>
-                    <div class="dimension-control">
-                        <label>Columns:</label>
-                        <input type="range" id="creator-cols" min="2" max="10" value="5">
-                        <span id="creator-cols-val">5</span>
+                <!-- Art Studio Toolbox Panel -->
+                <div class="tools-panel studio-toolbox">
+                    <div class="tool-section-title">
+                        <span>🛠️ Grid Dimensions</span>
                     </div>
 
-                    <div class="color-palette" id="creator-palette">
-                        <!-- Colors -->
+                    <div class="slider-control-card">
+                        <div class="slider-label-row">
+                            <label for="creator-rows">Rows (Down):</label>
+                            <span id="creator-rows-val" class="slider-val-badge">5</span>
+                        </div>
+                        <input type="range" id="creator-rows" min="2" max="10" value="5" class="festive-slider" aria-label="Rows slider">
                     </div>
 
+                    <div class="slider-control-card">
+                        <div class="slider-label-row">
+                            <label for="creator-cols">Columns (Across):</label>
+                            <span id="creator-cols-val" class="slider-val-badge">5</span>
+                        </div>
+                        <input type="range" id="creator-cols" min="2" max="10" value="5" class="festive-slider" aria-label="Columns slider">
+                    </div>
+
+                    <div class="tool-section-title">
+                        <span>🎨 Powder Palette</span>
+                    </div>
+                    <div class="color-palette studio-palette" id="creator-palette">
+                        <!-- Swatches injected by JS -->
+                    </div>
+
+                    <div class="tool-section-title">
+                        <span>⚡ Canvas Tools</span>
+                    </div>
                     <div class="creator-actions">
-                        <button id="btn-fill" class="secondary-btn">Fill All</button>
-                        <button id="btn-clear" class="secondary-btn">Clear Canvas</button>
+                        <button id="btn-fill" class="primary-btn btn-fill-all">
+                            <span class="btn-icon">✨</span> Fill All
+                        </button>
+                        <button id="btn-clear" class="secondary-btn btn-clear-all">
+                            <span class="btn-icon">🧹</span> Clear Canvas
+                        </button>
                     </div>
                 </div>
 
-                <div class="grid-wrapper">
-                    <div id="creator-grid" class="dot-grid"></div>
-                </div>
+                <!-- Canvas Workspace -->
+                <div class="creator-canvas-workspace">
+                    <div class="rangoli-canvas-board creator-board">
+                        <div class="board-frame-corner top-l"></div>
+                        <div class="board-frame-corner top-r"></div>
+                        <div class="board-frame-corner bot-l"></div>
+                        <div class="board-frame-corner bot-r"></div>
+                        
+                        <div class="grid-wrapper">
+                            <div id="creator-grid" class="dot-grid" role="grid" aria-label="Creator Grid"></div>
+                        </div>
+                    </div>
 
-                <div class="creator-info">
-                    <p>Grid: <span id="creator-dim-text">5 × 5</span></p>
-                    <p>Coloured Dots: <span id="creator-count">0</span></p>
-                    <p id="creator-equation" class="equation-text"></p>
+                    <!-- Mathematical Insight Card -->
+                    <div class="creator-info studio-stats-card">
+                        <div class="studio-stat-item">
+                            <span class="stat-sublabel">Canvas Dimensions:</span>
+                            <span id="creator-dim-text" class="stat-highlight">5 × 5</span>
+                        </div>
+                        <div class="studio-stat-item">
+                            <span class="stat-sublabel">Coloured Dots:</span>
+                            <span id="creator-count" class="stat-highlight">0</span>
+                        </div>
+                        <div class="studio-stat-formula">
+                            <p id="creator-equation" class="equation-text"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- 5. My Progress Screen (Kept for historical compatibility, if needed, but we'll use Results Screen mostly) -->
+        <!-- ============================================== -->
+        <!-- 5. MY PROGRESS SCREEN (Compatibility)          -->
+        <!-- ============================================== -->
         <section id="progress-screen" class="screen hidden">
-            <div class="top-bar">
-                <button class="nav-btn btn-home">🏠 Menu</button>
-                <h2>My Progress</h2>
+            <div class="screen-top-nav">
+                <button class="nav-btn btn-home btn-round-pill">
+                    <span class="nav-icon">🏠</span> Menu
+                </button>
+                <h2>My Rangoli Journey</h2>
+                <div></div>
             </div>
 
-            <div class="progress-container">
-                <div class="trophy-icon">🏆</div>
-                <div class="stats-card">
-                    <h3>Total Stars</h3>
-                    <div class="big-stars">⭐ <span id="progress-stars">0</span></div>
-                </div>
-                <div class="stats-card">
-                    <h3>Challenges Completed</h3>
-                    <div class="big-number"><span id="progress-completed">0</span> / 15</div>
+            <div class="progress-container festive-progress-card">
+                <div class="trophy-icon trophy-bounce">🏆</div>
+                <h3 class="progress-hero-title">Your Achievements</h3>
+
+                <div class="progress-stats-grid">
+                    <div class="stats-card">
+                        <h4>Total Stars</h4>
+                        <div class="big-stars">⭐ <span id="progress-stars">0</span></div>
+                    </div>
+                    <div class="stats-card">
+                        <h4>Challenges Completed</h4>
+                        <div class="big-number"><span id="progress-completed">0</span> / 15</div>
+                    </div>
                 </div>
 
                 <div class="stages-progress">
                     <div class="stage-card" id="stage-1-progress">
-                        <h4>Stage 1: Beginner</h4>
+                        <h4>🌱 Stage 1: Rangoli Explorer (Beginner)</h4>
                         <div class="progress-bar">
                             <div class="fill" id="bar-stage-1" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="stage-card" id="stage-2-progress">
-                        <h4>Stage 2: Master</h4>
+                        <h4>🎨 Stage 2: Colour Master (Intermediate)</h4>
                         <div class="progress-bar">
                             <div class="fill" id="bar-stage-2" style="width: 0%"></div>
                         </div>
                     </div>
                     <div class="stage-card" id="stage-3-progress">
-                        <h4>Stage 3: Champion</h4>
+                        <h4>👑 Stage 3: Rangoli Champion (Advanced)</h4>
                         <div class="progress-bar">
                             <div class="fill" id="bar-stage-3" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
 
-                <button class="primary-btn btn-home">Menu</button>
+                <button class="primary-btn btn-home btn-round-pill" style="margin-top: 1.5rem;">
+                    Back to Adventure Menu
+                </button>
             </div>
         </section>
 
-        <!-- 6. Results Screen -->
+        <!-- ============================================== -->
+        <!-- 6. RESULTS & CELEBRATION SCREEN                -->
+        <!-- ============================================== -->
         <section id="results-screen" class="screen hidden">
-            <div class="top-bar">
-                <button class="nav-btn btn-home">🏠 Menu</button>
-                <h2 id="results-title">Session Complete!</h2>
-            </div>
-            <div class="progress-container" style="max-width: 600px; position: relative; overflow: hidden;">
-                <!-- Confetti container -->
-                <div id="confetti-container"
-                    style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></div>
+            <div class="results-screen-backdrop"></div>
+            
+            <div class="progress-container results-card">
+                <!-- Dynamic Confetti / Petals Container -->
+                <div id="confetti-container" class="confetti-stage" aria-hidden="true"></div>
 
-                <div class="trophy-icon">🏆</div>
-                <h2 id="results-mode" style="color:var(--color-primary); margin-bottom:1rem;">Beginner Mode</h2>
-                <h3 id="results-message" style="margin-bottom:2rem; color:var(--color-purple);">Great Job!</h3>
+                <!-- Celebratory Diya / Trophy -->
+                <div class="victory-emblem-wrap">
+                    <div class="victory-rays"></div>
+                    <div class="trophy-icon trophy-bounce">🏆</div>
+                </div>
 
-                <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
-                    <div class="stats-card" style="width:120px;">
+                <div class="results-heading-group">
+                    <h2 id="results-title" class="results-celebrate-title">Level Complete!</h2>
+                    <div class="results-mode-badge" id="results-mode">Beginner Mode</div>
+                    <h3 id="results-message" class="results-praise-msg">Wonderful!</h3>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="results-stats-row">
+                    <div class="stats-card stat-attempted">
                         <h4>Attempted</h4>
-                        <div class="big-number" id="results-attempted" style="font-size:2rem;">0</div>
+                        <div class="big-number" id="results-attempted">0</div>
                     </div>
-                    <div class="stats-card" style="width:120px;">
+                    <div class="stats-card stat-correct">
                         <h4>Correct</h4>
-                        <div class="big-number" id="results-correct" style="font-size:2rem;">0</div>
+                        <div class="big-number" id="results-correct">0</div>
                     </div>
-                    <div class="stats-card" style="width:120px;">
+                    <div class="stats-card stat-accuracy">
                         <h4>Accuracy</h4>
-                        <div class="big-number" id="results-accuracy" style="font-size:2rem;">0%</div>
+                        <div class="big-number" id="results-accuracy">0%</div>
                     </div>
                 </div>
 
-                <div class="stats-card" style="width:100%; margin-bottom:2rem;">
-                    <h3>Stars Earned</h3>
-                    <div class="big-stars">⭐ <span id="results-stars">0</span></div>
+                <div class="results-stars-banner">
+                    <span class="banner-star-icon">⭐</span>
+                    <div class="banner-star-text">
+                        <span>Total Stars Earned:</span>
+                        <strong id="results-stars">0</strong>
+                    </div>
+                    <span class="banner-star-icon">⭐</span>
                 </div>
 
-                <div class="button-group">
-                    <button id="btn-next-level" class="primary-btn hidden">Next Level</button>
-                    <button id="btn-play-again" class="primary-btn">Replay</button>
-                    <button class="secondary-btn btn-home">Choose Another Mode</button>
+                <!-- Navigation Action Buttons -->
+                <div class="button-group results-buttons">
+                    <button id="btn-next-level" class="primary-btn btn-next-big hidden">
+                        <span>Next Level</span> <span class="arrow-bounce">➡️</span>
+                    </button>
+                    <button id="btn-play-again" class="primary-btn btn-replay">
+                        <span class="btn-icon">🔄</span> Play Again
+                    </button>
+                    <button class="secondary-btn btn-home">
+                        <span class="btn-icon">🏠</span> Choose Another Mode
+                    </button>
                 </div>
             </div>
         </section>
 
-        <!-- Hint Modal -->
-        <div id="hint-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>Hint</h2>
-                <p id="hint-text"></p>
-                <button id="btn-close-hint" class="primary-btn small-btn">Okay!</button>
+        <!-- ============================================== -->
+        <!-- HINT MODAL DIALOG                              -->
+        <!-- ============================================== -->
+        <div id="hint-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="hint-modal-title">
+            <div class="modal-backdrop" aria-hidden="true"></div>
+            <div class="modal-content rangoli-modal-card hint-modal-content">
+                <div class="modal-header-banner hint-banner">
+                    <span class="modal-rangoli-icon">💡</span>
+                    <h2 id="hint-modal-title">Helpful Hint</h2>
+                    <span class="modal-rangoli-icon">✨</span>
+                </div>
+                <div class="hint-body">
+                    <div class="hint-bubble">
+                        <p id="hint-text"></p>
+                    </div>
+                </div>
+                <button id="btn-close-hint" class="primary-btn btn-modal-action">
+                    <span>Got it! Thanks! ✨</span>
+                </button>
             </div>
         </div>
 
     </div>
 
-    <!-- Sound Effects -->
+    <!-- Audio Elements -->
     <audio id="bg-music" src="bgm.wav" loop autoplay preload="auto"></audio>
-    <audio id="snd-click"
-        src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
-        preload="auto"></audio>
-    <audio id="snd-success"
-        src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"
-        preload="auto"></audio>
-    <!-- Using web audio api in JS instead for reliable sound without files -->
+    <audio id="snd-click" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" preload="auto"></audio>
+    <audio id="snd-success" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" preload="auto"></audio>
 
     <script type="module" src="/game.js"></script>
 </body>
