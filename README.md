@@ -1,6 +1,7 @@
 # Rangoli Arrays: The Multiplication Adventure 🪔✨
 
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github)](https://github.com/divyaitankar2006-art/Rangoli-Arrays)
+[![Deploy to GitHub Pages](https://github.com/divyaitankar2006-art/Rangoli-Arrays/actions/workflows/deploy.yml/badge.svg)](https://github.com/divyaitankar2006-art/Rangoli-Arrays/actions/workflows/deploy.yml)
 [![Live Demo](https://img.shields.io/badge/Demo-Play%20Online-FF6F00?style=flat&logo=googlechrome&logoColor=white)](https://divyaitankar2006-art.github.io/Rangoli-Arrays/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -95,11 +96,14 @@ Rangoli-Arrays/
 │   └── workflows/
 │       └── deploy.yml      # Automated GitHub Pages CI/CD workflow
 ├── public/
-│   └── bgm.wav             # Background music audio asset
+│   ├── bgm.wav             # Background music audio asset
+│   └── favicon.svg         # Festive Diya browser favicon
 ├── .gitignore              # Files and folders ignored by Git
 ├── game.js                 # Core game logic, state management, and audio
+├── generate_bgm.py         # Python audio synthesis generator script
 ├── index.html              # HTML structure and game screens
 ├── package.json            # Project metadata and build scripts
+├── package-lock.json       # Exact lockfile for deterministic CI/CD builds
 ├── style.css               # Styling, animations, colors, and responsive layouts
 ├── vite.config.js          # Vite configuration with relative base paths
 └── README.md               # Project documentation

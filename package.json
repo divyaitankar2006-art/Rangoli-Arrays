@@ -3,11 +3,26 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Rangoli Arrays: The Multiplication Adventure",
+  "description": "Rangoli Arrays: The Multiplication Adventure - An interactive educational math game for kids",
   "homepage": "https://divyaitankar2006-art.github.io/Rangoli-Arrays/",
+  "author": "divyaitankar2006-art",
+  "license": "MIT",
+  "keywords": [
+    "education",
+    "math-game",
+    "multiplication",
+    "arrays",
+    "rangoli",
+    "stem",
+    "kids-learning",
+    "interactive-game"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/divyaitankar2006-art/Rangoli-Arrays.git"
+  },
+  "bugs": {
+    "url": "https://github.com/divyaitankar2006-art/Rangoli-Arrays/issues"
   },
   "scripts": {
     "dev": "vite",
@@ -18,3 +33,4 @@
     "vite": "^5.1.4"
   }
 }
+
