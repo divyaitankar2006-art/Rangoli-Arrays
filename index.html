@@ -221,7 +221,7 @@
                 <div class="welcome-features">
                     <div class="feat-pill"><span class="feat-icon">🎯</span> 45 Array Levels</div>
                     <div class="feat-pill"><span class="feat-icon">🎨</span> Free Creator Mode</div>
-                    <div class="feat-pill"><span class="feat-icon">⚡</span> 60s Speed Sprint</div>
+                    <div class="feat-pill"><span class="feat-icon">⚡</span> 15s Speed Sprint</div>
                     <div class="feat-pill"><span class="feat-icon">⭐</span> Earn Stars & Badges</div>
                 </div>
             </div>
@@ -255,8 +255,8 @@
                     <div class="guide-card">
                         <div class="guide-num">3</div>
                         <div class="guide-text">
-                            <h3>Colour with Rangoli Powder</h3>
-                            <p>Pick your favourite vibrant colour powder and tap each dot to fill it in beautifully.</p>
+                            <h3>Automatic Colourful Rangoli</h3>
+                            <p>Your rangoli dots automatically appear in vibrant, beautiful colours as you choose your rows and columns!</p>
                         </div>
                     </div>
                     <div class="guide-card">
@@ -384,7 +384,7 @@
                 <!-- Card 4: Speed Challenge -->
                 <div class="menu-card card-speed" id="card-speed" role="button" tabindex="0">
                     <div class="card-glow-bg"></div>
-                    <div class="card-badge-pill">⚡ 60 SECONDS</div>
+                    <div class="card-badge-pill">⚡ 15s PER LEVEL</div>
                     <div class="card-avatar-wrap">
                         <div class="card-avatar-ring orange-theme">
                             <span class="card-emoji">⚡</span>
@@ -397,9 +397,9 @@
                         </h3>
                         <div class="difficulty-rating">
                             <span class="diff-label">Timer:</span>
-                            <span class="diff-badge timer-badge">⏱️ 60s Race</span>
+                            <span class="diff-badge timer-badge">⏱️ 15s Per Level</span>
                         </div>
-                        <p class="card-desc">Race the clock! How many rangoli arrays can you build before time runs out?</p>
+                        <p class="card-desc">Race the clock! 15 mixed-difficulty challenges (Beginner, Intermediate, Advanced) with 15 seconds per level!</p>
                     </div>
                     <button class="primary-btn card-cta-btn">
                         <span>Sprint Now</span>
@@ -461,7 +461,7 @@
                 <!-- Speed Challenge Timer (Shown only in speed mode) -->
                 <div class="timer-display-pill hidden" id="speed-timer">
                     <span class="timer-clock-icon">⏱️</span>
-                    <span class="timer-val" id="time-left">60</span><small>s</small>
+                    <span class="timer-val" id="time-left">15</span><small>s</small>
                 </div>
 
                 <!-- Stars Earned Display -->
@@ -502,7 +502,7 @@
                             </div>
                             <div class="stepper-group">
                                 <button class="ctrl-btn btn-dim" id="btn-row-minus" aria-label="Decrease rows">−</button>
-                                <span id="display-rows" class="dimension-display">3</span>
+                                <span id="display-rows" class="dimension-display">1</span>
                                 <button class="ctrl-btn btn-dim" id="btn-row-plus" aria-label="Increase rows">+</button>
                             </div>
                         </div>
@@ -514,7 +514,7 @@
                             </div>
                             <div class="stepper-group">
                                 <button class="ctrl-btn btn-dim" id="btn-col-minus" aria-label="Decrease columns">−</button>
-                                <span id="display-cols" class="dimension-display">4</span>
+                                <span id="display-cols" class="dimension-display">1</span>
                                 <button class="ctrl-btn btn-dim" id="btn-col-plus" aria-label="Increase columns">+</button>
                             </div>
                         </div>
@@ -556,13 +556,13 @@
                     <div class="stats-panel-bar">
                         <div class="stat-progress-item">
                             <span class="stat-icon">✨</span>
-                            <span>Coloured Dots:</span>
+                            <span>Total Dots:</span>
                             <span class="colored-badge">
-                                <strong id="colored-count">0</strong>
+                                <strong id="colored-count">1</strong>
                             </span>
                         </div>
                         <div class="stat-hint-pill">
-                            <span>Tap any dot to colour or clear it!</span>
+                            <span>Vibrant rangoli dots ready! ✨</span>
                         </div>
                     </div>
 
@@ -572,7 +572,7 @@
                             <span class="btn-icon">💡</span> Hint
                         </button>
                         <button id="btn-reset" class="secondary-btn btn-action-reset">
-                            <span class="btn-icon">🔄</span> Clear Dots
+                            <span class="btn-icon">🔄</span> Reset Grid
                         </button>
                         <button id="btn-check" class="primary-btn btn-action-check">
                             <span class="btn-icon">✅</span> Check Answer
@@ -815,7 +815,7 @@
     </div>
 
     <!-- Audio Elements -->
-    <audio id="bg-music" src="bgm.wav" loop autoplay preload="auto"></audio>
+    <audio id="bg-music" src="bgm.wav" loop preload="auto"></audio>
     <audio id="snd-click" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" preload="auto"></audio>
     <audio id="snd-success" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" preload="auto"></audio>
 

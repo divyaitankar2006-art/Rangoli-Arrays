@@ -31,14 +31,17 @@ let playState = {
     questionsAttempted: 0,
     questionsCorrect: 0,
     timer: null,
-    timeLeft: 60,
+    timeLeft: 15,
+    autoAdvanceTimeout: null,
     currentLevel: 1,
-    rows: 3,
-    cols: 4,
+    rows: 1,
+    cols: 1,
     selectedColor: COLORS[0],
     gridState: [], 
     isChallengeComplete: false,
-    currentChallenge: null
+    currentChallenge: null,
+    speedQuestions: [],
+    speedIndex: 0
 };
 
 let creatorState = {
@@ -166,9 +169,11 @@ function initApp() {
     setupEventListeners();
     setupColorPalettes();
     
-    // Attempt to start BGM smoothly
+    // Start or stop BGM based on saved state
     if (gameState.musicEnabled) {
-        startMusic();
+        MusicController.play();
+    } else {
+        MusicController.stop();
     }
 }
 
@@ -195,38 +200,132 @@ function saveProgress() {
     }
 }
 
+// --------------------------------------------------------------------------
+// Background Music & Audio Controller
+// --------------------------------------------------------------------------
+const MusicController = {
+    audioEl: null,
+    playPromise: null,
+
+    getAudio() {
+        if (!this.audioEl) {
+            this.audioEl = document.getElementById('bg-music');
+            if (this.audioEl) {
+                this.audioEl.loop = true;
+                this.audioEl.volume = 0.16;
+                if (this.audioEl.removeAttribute) {
+                    this.audioEl.removeAttribute('autoplay');
+                }
+            }
+        }
+        return this.audioEl;
+    },
+
+    play() {
+        if (!gameState.musicEnabled) return;
+        const audio = this.getAudio();
+        if (!audio) return;
+
+        audio.muted = false;
+        audio.volume = 0.16;
+
+        // If audio is already actively playing, keep it playing continuously
+        if (!audio.paused) return;
+
+        const p = audio.play();
+        if (p !== undefined && typeof p.then === 'function') {
+            this.playPromise = p;
+            p.then(() => {
+                this.playPromise = null;
+                // If user toggled OFF while play was starting, pause immediately
+                if (!gameState.musicEnabled) {
+                    try { audio.pause(); } catch (e) {}
+                    audio.muted = true;
+                }
+            }).catch(e => {
+                this.playPromise = null;
+                console.log("Audio autoplay prevented:", e);
+            });
+        }
+    },
+
+    stop() {
+        const audio = this.getAudio();
+        if (!audio) return;
+
+        audio.muted = true;
+        try {
+            audio.pause();
+        } catch (e) {}
+
+        if (this.playPromise) {
+            this.playPromise
+                .then(() => {
+                    try { audio.pause(); } catch (e) {}
+                    this.playPromise = null;
+                })
+                .catch(() => {
+                    try { audio.pause(); } catch (e) {}
+                    this.playPromise = null;
+                });
+        }
+    },
+
+    toggle() {
+        gameState.musicEnabled = !gameState.musicEnabled;
+        if (gameState.musicEnabled) {
+            this.play();
+        } else {
+            this.stop();
+        }
+        playSound('click');
+        updateSoundUI();
+        saveProgress();
+    }
+};
+
 function updateSoundUI() {
     const btnSound = document.getElementById('btn-sound-toggle');
     if (btnSound) {
         const icon = btnSound.querySelector('.icon-sound') || btnSound;
+        const tooltip = btnSound.querySelector('.btn-tooltip');
         if (gameState.soundEnabled) {
             btnSound.classList.remove('muted');
             icon.textContent = '🔊';
+            btnSound.title = 'Sound FX: ON (Click to mute)';
+            btnSound.setAttribute('aria-label', 'Turn Sound Effects OFF');
+            if (tooltip) tooltip.textContent = 'Sound: ON';
         } else {
             btnSound.classList.add('muted');
             icon.textContent = '🔇';
+            btnSound.title = 'Sound FX: OFF (Click to unmute)';
+            btnSound.setAttribute('aria-label', 'Turn Sound Effects ON');
+            if (tooltip) tooltip.textContent = 'Sound: OFF';
         }
     }
     
     const btnMusic = document.getElementById('btn-music-toggle');
     if (btnMusic) {
         const icon = btnMusic.querySelector('.icon-music') || btnMusic;
+        const tooltip = btnMusic.querySelector('.btn-tooltip');
         if (gameState.musicEnabled) {
             btnMusic.classList.remove('muted');
             icon.textContent = '🎵';
+            btnMusic.title = 'Music: ON (Click to turn OFF)';
+            btnMusic.setAttribute('aria-label', 'Turn Background Music OFF');
+            if (tooltip) tooltip.textContent = 'Music: ON';
         } else {
             btnMusic.classList.add('muted');
             icon.textContent = '🔇';
+            btnMusic.title = 'Music: OFF (Click to turn ON)';
+            btnMusic.setAttribute('aria-label', 'Turn Background Music ON');
+            if (tooltip) tooltip.textContent = 'Music: OFF';
         }
     }
 }
 
 function startMusic() {
-    const bgm = document.getElementById('bg-music');
-    if (bgm && gameState.musicEnabled) {
-        bgm.volume = 0.16; // Friendly background level
-        bgm.play().catch(e => console.log("Audio autoplay prevented", e));
-    }
+    MusicController.play();
 }
 
 function toggleSound() {
@@ -242,17 +341,7 @@ function toggleSound() {
 }
 
 function toggleMusic() {
-    gameState.musicEnabled = !gameState.musicEnabled;
-    updateSoundUI();
-    const bgm = document.getElementById('bg-music');
-    if (gameState.musicEnabled) {
-        bgm.volume = 0.16;
-        bgm.play().catch(e => console.log(e));
-        playSound('click');
-    } else {
-        if (bgm) bgm.pause();
-    }
-    saveProgress();
+    MusicController.toggle();
 }
 
 // --------------------------------------------------------------------------
@@ -267,13 +356,14 @@ function setupEventListeners() {
     if (btnMusic) btnMusic.addEventListener('click', toggleMusic);
     
     // Unlock Web Audio and BGM on user's first touch/click
-    document.addEventListener('click', () => {
+    const handleFirstInteraction = () => {
         initAudio();
-        const bgm = document.getElementById('bg-music');
-        if (gameState.musicEnabled && bgm && bgm.paused) {
-            startMusic();
+        if (gameState.musicEnabled) {
+            MusicController.play();
         }
-    }, { once: true });
+    };
+    document.addEventListener('click', handleFirstInteraction, { once: true });
+    document.addEventListener('touchstart', handleFirstInteraction, { once: true });
 
     // Welcome Screen Buttons
     const btnPlay = document.getElementById('btn-lets-play');
@@ -394,8 +484,10 @@ function setupEventListeners() {
     if (btnReset) {
         btnReset.addEventListener('click', () => {
             if (playState.isChallengeComplete) return;
-            playState.gridState = new Array(playState.rows * playState.cols).fill(null);
-            renderPlayGrid();
+            playState.rows = 1;
+            playState.cols = 1;
+            playState.gridState = generatePlayGridColors(playState.rows, playState.cols);
+            updatePlayUI();
             hideFeedback();
             playSound('click');
         });
@@ -531,24 +623,33 @@ function startPlayMode(mode, level = null) {
     playState.questionsCorrect = 0;
     
     if (mode === 'speed') {
-        playState.currentLevel = 0;
+        playState.speedQuestions = generateSpeedQuestions();
+        playState.speedIndex = 0;
+        playState.currentLevel = 1;
+        
         document.getElementById('speed-timer').classList.remove('hidden');
         document.getElementById('btn-prev-level').classList.add('hidden');
         document.getElementById('btn-next-level-top').classList.add('hidden');
-        document.getElementById('total-challenge-num').classList.add('hidden');
-        document.getElementById('current-mode-name').textContent = "SPEED";
+        document.getElementById('total-challenge-num').classList.remove('hidden');
+        document.getElementById('total-challenge-num').textContent = "of 15";
         
-        playState.timeLeft = 60;
-        document.getElementById('time-left').textContent = playState.timeLeft;
+        // Reset timer visual state to bright warm color
+        const timerPill = document.getElementById('speed-timer');
+        if (timerPill) {
+            timerPill.style.borderColor = '#ff9800';
+            timerPill.style.color = '#e65100';
+            timerPill.style.background = '#fff3e0';
+        }
+        
+        playState.timeLeft = 15;
+        const timerEl = document.getElementById('time-left');
+        if (timerEl) timerEl.textContent = playState.timeLeft;
         
         clearInterval(playState.timer);
-        playState.timer = setInterval(() => {
-            playState.timeLeft--;
-            document.getElementById('time-left').textContent = playState.timeLeft;
-            if (playState.timeLeft <= 0) {
-                showSpeedResults();
-            }
-        }, 1000);
+        if (playState.autoAdvanceTimeout) {
+            clearTimeout(playState.autoAdvanceTimeout);
+            playState.autoAdvanceTimeout = null;
+        }
     } else {
         // Regular mode (Beginner, Intermediate, Advanced)
         playState.currentLevel = level !== null ? level : Math.min(15, gameState.progress[mode]);
@@ -560,14 +661,74 @@ function startPlayMode(mode, level = null) {
         document.getElementById('current-mode-name').textContent = mode.toUpperCase();
         
         clearInterval(playState.timer);
+        if (playState.autoAdvanceTimeout) {
+            clearTimeout(playState.autoAdvanceTimeout);
+            playState.autoAdvanceTimeout = null;
+        }
     }
 
     loadChallenge();
     showScreen('learn-play-screen');
 }
 
+function startSpeedLevelTimer() {
+    clearInterval(playState.timer);
+    if (playState.autoAdvanceTimeout) {
+        clearTimeout(playState.autoAdvanceTimeout);
+        playState.autoAdvanceTimeout = null;
+    }
+    
+    // Each level receives its own independent 15-second countdown
+    playState.timeLeft = 15;
+    
+    const timerEl = document.getElementById('time-left');
+    if (timerEl) timerEl.textContent = playState.timeLeft;
+    
+    const timerPill = document.getElementById('speed-timer');
+    if (timerPill) {
+        timerPill.style.borderColor = '#ff9800';
+        timerPill.style.color = '#e65100';
+        timerPill.style.background = '#fff3e0';
+    }
+    
+    playState.timer = setInterval(() => {
+        playState.timeLeft--;
+        const curTimerEl = document.getElementById('time-left');
+        if (curTimerEl) curTimerEl.textContent = playState.timeLeft;
+        
+        const pill = document.getElementById('speed-timer');
+        if (pill) {
+            if (playState.timeLeft <= 5) {
+                pill.style.borderColor = '#e53935';
+                pill.style.color = '#b71c1c';
+                pill.style.background = '#ffebee';
+            } else {
+                pill.style.borderColor = '#ff9800';
+                pill.style.color = '#e65100';
+                pill.style.background = '#fff3e0';
+            }
+        }
+        
+        if (playState.timeLeft <= 0) {
+            clearInterval(playState.timer);
+            // Reached zero on this level!
+            if (playState.speedIndex + 1 >= 15) {
+                // Was Level 15 (final level) - end sprint and show results
+                showSpeedResults(playState.questionsCorrect >= 15);
+            } else {
+                // Automatically move to the next level according to existing game flow
+                nextSpeedChallenge();
+            }
+        }
+    }, 1000);
+}
+
 function endSpeedChallenge() {
     clearInterval(playState.timer);
+    if (playState.autoAdvanceTimeout) {
+        clearTimeout(playState.autoAdvanceTimeout);
+        playState.autoAdvanceTimeout = null;
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -1010,12 +1171,136 @@ const ADVANCED_LEVELS = [
     }
 ];
 
+// --------------------------------------------------------------------------
+// Speed Sprint Question Pools (5 Beginner, 5 Intermediate, 5 Advanced Categories)
+// --------------------------------------------------------------------------
+const SPEED_BEGINNER_CATEGORIES = [
+    // 1. Basic multiplication arrays
+    [
+        { rows: 2, cols: 2, text: "Basic Array: Make a 2 × 2 rangoli array: 2 rows of 2 dots.", equationText: "2 × 2 = ?" },
+        { rows: 3, cols: 3, text: "Square Array: Make 3 rows of 3 dots to form a square array.", equationText: "3 × 3 = ?" },
+        { rows: 4, cols: 4, text: "Square Array: Build a 4 × 4 square array for the rangoli center!", equationText: "4 × 4 = ?" }
+    ],
+    // 2. Count rows and columns
+    [
+        { rows: 2, cols: 3, text: "Count Rows & Columns: Rows go across, columns go down! Make 2 rows of 3 dots.", equationText: "2 × 3 = ?" },
+        { rows: 3, cols: 2, text: "Turn the Array: Make 3 rows of 2 dots across the grid.", equationText: "3 × 2 = ?" },
+        { rows: 5, cols: 2, text: "Count Rows & Columns: Make 5 rows with 2 dots in each row.", equationText: "5 × 2 = ?" }
+    ],
+    // 3. Repeated addition
+    [
+        { rows: 2, cols: 3, text: "Repeated Addition: 3 + 3 is 2 groups of 3 dots. Make 2 rows of 3 dots!", equationText: "3 + 3 = 2 × 3 = ?" },
+        { rows: 2, cols: 4, text: "Repeated Addition: 4 + 4 is 2 rows of 4 dots. Build this array!", equationText: "4 + 4 = 2 × 4 = ?" },
+        { rows: 4, cols: 2, text: "Repeated Addition: 2 + 2 + 2 + 2 is 4 groups of 2. Make 4 rows of 2 dots!", equationText: "2 + 2 + 2 + 2 = 4 × 2 = ?" },
+        { rows: 2, cols: 5, text: "Repeated Addition: 5 + 5 is 2 rows of 5 dots. Build the array!", equationText: "5 + 5 = 2 × 5 = ?" },
+        { rows: 3, cols: 5, text: "Repeated Addition: 5 + 5 + 5 is 3 groups of 5. Build 3 rows of 5 dots!", equationText: "5 + 5 + 5 = 3 × 5 = ?" }
+    ],
+    // 4. Simple multiplication
+    [
+        { rows: 4, cols: 3, text: "Simple Multiplication: 4 rows × 3 columns. Build the colourful array!", equationText: "4 × 3 = ?" },
+        { rows: 4, cols: 5, text: "Simple Multiplication: Kolam Grid! Build 4 rows with 5 dots in each row.", equationText: "4 × 5 = ?" },
+        { rows: 5, cols: 5, text: "Simple Multiplication: Build the grand 5 × 5 Lotus Array: 5 rows of 5 dots.", equationText: "5 × 5 = ?" }
+    ],
+    // 5. Total number of dots
+    [
+        { rows: 3, cols: 4, text: "Total Dots: Rangoli Border! Make 3 rows of 4 dots to find 3 × 4.", equationText: "3 × 4 = ?" },
+        { rows: 2, cols: 5, text: "Total Dots: Find the total dots in an array with 2 rows and 5 columns.", equationText: "2 × 5 = ?" },
+        { rows: 3, cols: 3, text: "Total Dots: Count the total dots in 3 rows with 3 dots in each row.", equationText: "3 × 3 = ?" }
+    ]
+];
+
+const SPEED_INTERMEDIATE_CATEGORIES = [
+    // 1. Missing factor
+    [
+        { type: 'missing_col', rows: 3, cols: 6, text: "Missing Factor: 3 × ? = 18. We have 3 rows. How many columns are needed for 18 dots?", equationText: "3 × ? = 18" },
+        { type: 'missing_col', rows: 4, cols: 6, text: "Missing Factor: 4 × ? = 24. We have 4 rows. Find how many dots in each row!", equationText: "4 × ? = 24" },
+        { type: 'missing_col', rows: 6, cols: 6, text: "Missing Factor: 6 × ? = 36. A square rangoli has 6 rows. Find the missing column count!", equationText: "6 × ? = 36" }
+    ],
+    // 2. Missing rows or columns
+    [
+        { type: 'missing_row', rows: 7, cols: 5, text: "Missing Rows: ? × 5 = 35. Each row has 5 dots. How many rows make 35 dots?", equationText: "? × 5 = 35" },
+        { type: 'missing_row', rows: 5, cols: 6, text: "Missing Rows: ? × 6 = 30. Each row has 6 dots. Find how many rows make 30 dots!", equationText: "? × 6 = 30" },
+        { type: 'missing_col', rows: 5, cols: 7, text: "Missing Factor: 5 × ? = 35. Five equal rows make 35 dots. How many in each row?", equationText: "5 × ? = 35" }
+    ],
+    // 3. Compare two arrays
+    [
+        { rows: 4, cols: 4, text: "Compare Arrays: 2 × 8 = 16. Build an array with 4 rows that has the same 16 dots!", equationText: "4 × ? = 16 (same as 2 × 8)" },
+        { rows: 6, cols: 4, text: "Compare Arrays: 3 × 8 = 24. Make an equivalent array with 6 rows that has 24 dots!", equationText: "6 × ? = 24 (same as 3 × 8)" },
+        { rows: 4, cols: 9, text: "Compare Arrays: Both 4 × 9 and 6 × 6 equal 36! Build the array with 4 rows and 9 columns.", equationText: "4 × 9 = 36 (same as 6 × 6)" }
+    ],
+    // 4. Slightly harder multiplication
+    [
+        { rows: 6, cols: 3, text: "Larger Array: Turn the array to make 6 rows of 3 dots. Find 6 × 3!", equationText: "6 × 3 = ?" },
+        { rows: 7, cols: 4, text: "Larger Array: Peacock Pattern! Build 7 rows with 4 columns.", equationText: "7 × 4 = ?" },
+        { rows: 8, cols: 4, text: "Larger Array: Mandala Grid! Create 8 rows of 4 colourful dots.", equationText: "8 × 4 = ?" },
+        { rows: 7, cols: 6, text: "Colour Master: Build a magnificent 7 rows by 6 columns rangoli array.", equationText: "7 × 6 = ?" }
+    ],
+    // 5. Simple real-life multiplication
+    [
+        { rows: 2, cols: 6, text: "Real-Life Problem: Aarav starts with 2 rows of 3 dots, then doubles the columns! Build 2 rows of 6 dots.", equationText: "2 × (3 × 2) = 2 × 6 = ?" },
+        { rows: 5, cols: 5, text: "Real-Life Problem: Meera has 4 rows of 5 dots. She adds 1 more row of 5! Build the new 5 × 5 array.", equationText: "(4 × 5) + 5 = 5 × 5 = ?" },
+        { rows: 6, cols: 6, text: "Real-Life Problem: Start with 3 rows of 6 dots, then double the rows! Build 6 rows of 6 dots.", equationText: "(3 × 2) rows × 6 = 6 × 6 = ?" }
+    ]
+];
+
+const SPEED_ADVANCED_CATEGORIES = [
+    // 1. Interesting word problems
+    [
+        { rows: 6, cols: 7, allowCommutative: true, text: "Diwali Rangoli: Priya draws a courtyard rangoli with 6 rows of 7 dots. Build this array to find the total dots!", equationText: "6 × 7 = ?" },
+        { rows: 9, cols: 6, allowCommutative: true, text: "Grand Kolam Dots: An expert artist draws 9 rows with 6 white chalk dots in each row. Build the array!", equationText: "9 × 6 = ?" }
+    ],
+    // 2. Two-step multiplication
+    [
+        { type: 'missing_col', rows: 6, cols: 4, allowCommutative: true, text: "Festival Diyas: Kavi had 24 lamps in 3 rows of 8. She rearranges them into 6 equal rows (6 × ? = 24). Build the new array!", equationText: "6 × ? = 24" },
+        { type: 'missing_col', rows: 5, cols: 8, allowCommutative: true, text: "Jasmine Flowers: Diya makes 5 strings of 6 flowers (30). Her sister gives 10 more to reach 40! Build an array of 5 rows that equals 40.", equationText: "5 × ? = 40" }
+    ],
+    // 3. Flowers & sweets
+    [
+        { rows: 7, cols: 7, allowCommutative: true, text: "Marigold Flowers: Ananya strings fresh marigold flowers in 7 equal rows with 7 flowers in each row. How many flowers in all?", equationText: "7 × 7 = ?" },
+        { rows: 6, cols: 8, allowCommutative: true, text: "Festive Sweets: A halwai packs besan laddoos in a tray of 6 rows with 8 laddoos in each row. Find the total laddoos!", equationText: "6 × 8 = ?" },
+        { rows: 8, cols: 7, allowCommutative: true, text: "Flower Rangoli: For Onam, Grandma places rose petals in 8 rows of 7 petals each. Find the total petals!", equationText: "8 × 7 = ?" }
+    ],
+    // 4. Festival decorations
+    [
+        { rows: 8, cols: 6, allowCommutative: true, text: "Toran Beads: Rohan stitches shiny golden beads onto a doorway toran in 8 rows with 6 beads in each row.", equationText: "8 × 6 = ?" },
+        { rows: 9, cols: 5, allowCommutative: true, text: "Festival Decorations: An artisan hangs clay bells on a wall in 9 rows with 5 bells in each row.", equationText: "9 × 5 = ?" },
+        { rows: 7, cols: 8, allowCommutative: true, text: "Festival Lights: 7 rows of decorative paper lanterns are hung along the street, with 8 lanterns in each row.", equationText: "7 × 8 = ?" },
+        { rows: 9, cols: 7, allowCommutative: true, text: "Brass Lamps: 9 rows of brass diyas are lit for the evening aarti, with 7 lamps in each row. How many lamps shine?", equationText: "9 × 7 = ?" }
+    ],
+    // 5. Multiplication reasoning & application
+    [
+        { rows: 6, cols: 6, allowCommutative: false, text: "Reasoning Challenge: Vikram has 36 kaju katli pieces. He wants a square array where rows and columns are equal. Build this square array!", equationText: "? × ? = 36 (Square Array)" },
+        { type: 'missing_row', rows: 6, cols: 8, allowCommutative: true, text: "Gift Box Reasoning: 48 sweet boxes are displayed with 8 boxes in each row. How many rows are needed? (? × 8 = 48).", equationText: "? × 8 = 48" },
+        { rows: 8, cols: 8, allowCommutative: true, text: "Mirror Embroidery: A craftsman embroiders sparkling mirrors on a festival dupatta in 8 rows of 8 mirrors.", equationText: "8 × 8 = ?" }
+    ]
+];
+
+function generateSpeedQuestions() {
+    const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    
+    // Pick 1 from each distinct category for each tier to guarantee variety (5 Beginner, 5 Intermediate, 5 Advanced)
+    const beginnerSelected = SPEED_BEGINNER_CATEGORIES.map(cat => ({ ...pickRandom(cat), difficulty: 'Beginner' }));
+    const intermediateSelected = SPEED_INTERMEDIATE_CATEGORIES.map(cat => ({ ...pickRandom(cat), difficulty: 'Intermediate' }));
+    const advancedSelected = SPEED_ADVANCED_CATEGORIES.map(cat => ({ ...pickRandom(cat), difficulty: 'Advanced' }));
+    
+    const all15 = [...beginnerSelected, ...intermediateSelected, ...advancedSelected];
+    
+    // Fisher-Yates shuffle for true random mixed order every session
+    for (let i = all15.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [all15[i], all15[j]] = [all15[j], all15[i]];
+    }
+    
+    return all15;
+}
+
 function generateChallenge(mode, level) {
-    // Speed sprint remains 100% untouched
     if (mode === 'speed') {
-        const r = Math.floor(Math.random() * 8) + 2;
-        const c = Math.floor(Math.random() * 8) + 2;
-        return { type: 'standard', rows: r, cols: c, text: `Quick! Make ${r} rows of ${c}!` };
+        if (!playState.speedQuestions || playState.speedQuestions.length === 0) {
+            playState.speedQuestions = generateSpeedQuestions();
+            playState.speedIndex = 0;
+        }
+        return playState.speedQuestions[playState.speedIndex] || playState.speedQuestions[0];
     }
     
     const lvlIndex = Math.max(0, Math.min(14, (level || 1) - 1));
@@ -1037,18 +1322,34 @@ function loadChallenge() {
     playState.questionsAttempted++;
     
     if (playState.mode === 'speed') {
-        document.getElementById('current-challenge-num').textContent = playState.questionsAttempted;
+        const qNum = (playState.speedIndex || 0) + 1;
+        playState.currentLevel = qNum;
+        document.getElementById('current-challenge-num').textContent = qNum;
+        document.getElementById('total-challenge-num').textContent = "of 15";
+        document.getElementById('total-challenge-num').classList.remove('hidden');
+        
+        playState.currentChallenge = playState.speedQuestions[playState.speedIndex];
+        const currentQ = playState.currentChallenge;
+        const diffTag = currentQ && currentQ.difficulty ? `SPEED • ${currentQ.difficulty.toUpperCase()}` : "SPEED";
+        document.getElementById('current-mode-name').textContent = diffTag;
+        
+        // Start fresh 15-second timer for this level
+        startSpeedLevelTimer();
     } else {
         document.getElementById('current-challenge-num').textContent = playState.currentLevel;
+        document.getElementById('total-challenge-num').textContent = "of 15";
+        document.getElementById('total-challenge-num').classList.remove('hidden');
+        document.getElementById('current-mode-name').textContent = playState.mode.toUpperCase();
         
         // Update top bar buttons visual state
         const prevBtn = document.getElementById('btn-prev-level');
         const nextBtn = document.getElementById('btn-next-level-top');
         if (prevBtn) prevBtn.style.opacity = playState.currentLevel > 1 ? "1" : "0.4";
         if (nextBtn) nextBtn.style.opacity = (playState.currentLevel < gameState.progress[playState.mode] && playState.currentLevel < 15) ? "1" : "0.4";
+        
+        playState.currentChallenge = generateChallenge(playState.mode, playState.currentLevel);
     }
     
-    playState.currentChallenge = generateChallenge(playState.mode, playState.currentLevel);
     let ch = playState.currentChallenge;
     
     document.getElementById('challenge-instruction').textContent = ch.text;
@@ -1065,11 +1366,11 @@ function loadChallenge() {
         document.getElementById('challenge-equation').textContent = `${ch.rows} × ${ch.cols} = ?`;
     }
 
-    // Default UI grid size - start off by 1 so child interacts with steppers
-    playState.rows = Math.max(1, (ch.rows || 3) - 1);
-    playState.cols = Math.max(1, (ch.cols || 4) - 1);
+    // Default UI grid size - start with 1 row and 1 column (1 dot initially)
+    playState.rows = 1;
+    playState.cols = 1;
     
-    playState.gridState = new Array(playState.rows * playState.cols).fill(null);
+    playState.gridState = generatePlayGridColors(playState.rows, playState.cols);
     playState.isChallengeComplete = false;
     
     updatePlayUI();
@@ -1086,6 +1387,18 @@ function loadChallenge() {
     }
 }
 
+// Generate attractive, visually balanced rangoli colors for rows & columns
+function generatePlayGridColors(rows, cols) {
+    const grid = [];
+    for (let r = 0; r < rows; r++) {
+        const rowColor = COLORS[r % COLORS.length];
+        for (let c = 0; c < cols; c++) {
+            grid.push(rowColor);
+        }
+    }
+    return grid;
+}
+
 function changeDimension(mode, dim, amount) {
     if (mode === 'play') {
         if (playState.isChallengeComplete) return; 
@@ -1093,8 +1406,7 @@ function changeDimension(mode, dim, amount) {
         const newVal = playState[dim] + amount;
         if (newVal >= 1 && newVal <= 10) {
             playState[dim] = newVal;
-            const newGrid = new Array(playState.rows * playState.cols).fill(null);
-            playState.gridState = newGrid; 
+            playState.gridState = generatePlayGridColors(playState.rows, playState.cols); 
             updatePlayUI();
             hideFeedback();
             playSound('click');
@@ -1154,31 +1466,21 @@ function renderPlayGrid() {
         }
     }
 
+    // Ensure gridState has automatic vibrant colors matching current rows and cols
+    if (!playState.gridState || playState.gridState.length !== playState.rows * playState.cols) {
+        playState.gridState = generatePlayGridColors(playState.rows, playState.cols);
+    }
+
     let coloredCount = 0;
     
     for (let i = 0; i < playState.rows * playState.cols; i++) {
         const dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.setAttribute('role', 'button');
+        dot.className = 'dot colored';
         dot.setAttribute('aria-label', `Dot ${i + 1}`);
         
-        if (playState.gridState[i]) {
-            dot.style.backgroundColor = playState.gridState[i];
-            dot.classList.add('colored');
-            coloredCount++;
-        }
-        
-        dot.addEventListener('click', () => {
-            if (playState.isChallengeComplete) return;
-            
-            if (playState.gridState[i] === playState.selectedColor) {
-                playState.gridState[i] = null;
-            } else {
-                playState.gridState[i] = playState.selectedColor;
-            }
-            playSound('click');
-            renderPlayGrid();
-        });
+        const color = playState.gridState[i] || COLORS[Math.floor(i / playState.cols) % COLORS.length];
+        dot.style.backgroundColor = color;
+        coloredCount++;
         
         grid.appendChild(dot);
     }
@@ -1247,8 +1549,26 @@ function checkAnswer() {
     speakPraise();
     
     if (playState.mode === 'speed') {
+        clearInterval(playState.timer);
+        if (playState.autoAdvanceTimeout) {
+            clearTimeout(playState.autoAdvanceTimeout);
+            playState.autoAdvanceTimeout = null;
+        }
         playState.questionsCorrect++;
-        document.getElementById('btn-next').classList.remove('hidden');
+        if (playState.speedIndex + 1 >= 15) {
+            // Completed all 15 questions!
+            setTimeout(() => {
+                showSpeedResults(playState.questionsCorrect >= 15);
+            }, 700);
+        } else {
+            document.getElementById('btn-next').textContent = "Next Fast! ➡️";
+            document.getElementById('btn-next').classList.remove('hidden');
+            playState.autoAdvanceTimeout = setTimeout(() => {
+                if (playState.mode === 'speed' && playState.isChallengeComplete) {
+                    nextSpeedChallenge();
+                }
+            }, 1200);
+        }
     } else {
         // Regular mode level completion
         if (playState.currentLevel === gameState.progress[playState.mode]) {
@@ -1267,7 +1587,17 @@ function checkAnswer() {
 }
 
 function nextSpeedChallenge() {
-    loadChallenge();
+    clearInterval(playState.timer);
+    if (playState.autoAdvanceTimeout) {
+        clearTimeout(playState.autoAdvanceTimeout);
+        playState.autoAdvanceTimeout = null;
+    }
+    playState.speedIndex++;
+    if (playState.speedIndex >= 15) {
+        showSpeedResults(playState.questionsCorrect >= 15);
+    } else {
+        loadChallenge();
+    }
 }
 
 function showHint() {
@@ -1360,23 +1690,40 @@ function showLevelComplete() {
     }
 }
 
-function showSpeedResults() {
+function showSpeedResults(allCompleted = false) {
     endSpeedChallenge();
     showScreen('results-screen');
     const conf = document.getElementById('confetti-container');
     if (conf) conf.innerHTML = '';
     
-    document.getElementById('results-title').textContent = "Time's Up! ⏱️";
-    document.getElementById('results-mode').textContent = "SPEED SPRINT FINISH";
-    document.getElementById('results-message').textContent = "Fantastic effort!";
+    const perfectScore = playState.questionsCorrect === 15;
+    
+    if (perfectScore) {
+        document.getElementById('results-title').textContent = "⚡ SPEED SPRINT CHAMPION! 🏆";
+        document.getElementById('results-mode').textContent = "ALL 15 LEVELS COMPLETED!";
+        document.getElementById('results-message').textContent = "Incredible speed! Perfect score: 15 out of 15!";
+        createConfetti();
+        playSound('celebration');
+    } else if (playState.questionsCorrect >= 10) {
+        document.getElementById('results-title').textContent = "⚡ SPEED SPRINT FINISH! 🌟";
+        document.getElementById('results-mode').textContent = "15 LEVELS COMPLETED";
+        document.getElementById('results-message').textContent = `Great job! You scored ${playState.questionsCorrect} out of 15! Super fast thinking!`;
+        createConfetti();
+        playSound('celebration');
+    } else {
+        document.getElementById('results-title').textContent = "Speed Sprint Finish! ⏱️";
+        document.getElementById('results-mode').textContent = "15 LEVELS COMPLETED";
+        document.getElementById('results-message').textContent = `You scored ${playState.questionsCorrect} out of 15! Every sprint makes you sharper and faster!`;
+        playSound('success');
+    }
     
     // Show speed stats
     document.querySelectorAll('.stats-card').forEach(el => {
         if (el.querySelector('h4')) el.style.display = 'block';
     });
     
-    document.getElementById('results-attempted').textContent = playState.questionsAttempted;
-    document.getElementById('results-correct').textContent = playState.questionsCorrect;
+    document.getElementById('results-attempted').textContent = `${playState.questionsAttempted} / 15`;
+    document.getElementById('results-correct').textContent = `${playState.questionsCorrect} / 15`;
     
     let acc = 0;
     if (playState.questionsAttempted > 0) {
